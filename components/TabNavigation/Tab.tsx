@@ -14,7 +14,7 @@ const Tab: FC<Props> = ({ id, children, ...props }) => {
   return (
     <button
       id={id}
-      className='h-[57px] rounded-[50px] border-[3px] border-black w-full'
+      className='h-[57px] w-full hover:opacity-50'
       {...props}
     >
       {children}
