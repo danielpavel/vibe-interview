@@ -11,6 +11,7 @@ interface TokenPoolsParam {
 const poolsQuery = (first: number) => `
 {
   pools(first: ${first}, orderDirection: desc orderBy: volumeUSD) {
+    id
     volumeUSD
     totalValueLockedUSD
     token0 {
@@ -52,6 +53,7 @@ export function useLiquidityPools({ first }: TokenPoolsParam) {
   if (data && Array.isArray(data.data?.pools)) {
     data.data.pools.map((pool: any, index: any) => {
       result.push({
+        id: pool.id,
         volume: pool.volumeUSD,
         tvl: pool.totalValueLockedUSD,
         token0: pool.token0,

@@ -87,11 +87,10 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
 
   useEffect(() => {
     setTokenSelected(isTokenSelected(selectedTokenPair, token));
-    console.log('[token] ')
   }, [selectedTokenPair]);
 
   useEffect(() => {
-    console.log('[tokenSelected]', token, ' selected: ', tokenSelected);
+    // console.log('[tokenSelected]', token, ' selected: ', tokenSelected);
   }, [tokenSelected])
 
   return (

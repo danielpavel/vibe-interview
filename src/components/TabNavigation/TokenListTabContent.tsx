@@ -12,7 +12,7 @@ const TokenListTabContent: FC<Props> = ({ }) => {
   const [selectedTokenPair, setSelectedTokenPair] = useRecoilState(tokenPair);
 
   useEffect(() => {
-    console.log('[TokenListTabContent][selectedTokenPair]', selectedTokenPair);
+    // console.log('[TokenListTabContent][selectedTokenPair]', selectedTokenPair);
   }, [selectedTokenPair, setSelectedTokenPair])
 
   return (

@@ -9,7 +9,7 @@ const usdToMil = (usdValue: string | undefined) => {
   return usdValue ? Math.ceil(Number(usdValue) / oneMillion) : ''
 }
 
-const LPCell: FC<Props> = ({ pool }) => {
+const LPoolCell: FC<Props> = ({ pool }) => {
   return (
     <div className='flex h-[50px] justify-between items-center p-4 gap-x-2'>
       <div className='font-mono text-sm'>
@@ -19,10 +19,11 @@ const LPCell: FC<Props> = ({ pool }) => {
         ${usdToMil(pool.tvl)}M
       </div>
       <div className='font-mono text-sm'>
-        ${usdToMil(pool.volume)}M
+        {/* ${usdToMil(pool.volume)}M */}
+        {pool.id}
       </div>
     </div>
   )
 };
 
-export default LPCell
+export default LPoolCell
