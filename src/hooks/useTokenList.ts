@@ -8,29 +8,23 @@ interface TokenListParam {
   first?: number
 }
 
-const fetcher = (url: string, first: number) => {
-  console.log("[fetchet] with url", url);
+const tokensQuery = (first: number) => `
+{
+  tokens(first: ${first} orderBy:volumeUSD orderDirection: desc) {
+    id
+    name
+    symbol
+  }
+}
+`;
+
+const fetcher = (url: string, first: number = 10) => {
+  // console.log("[fetchet] with query", tokensQuery(first));
   return axios({
     url: url[0],
     method: "post",
     data: {
-      query: `
-      {
-        pools(first: 10, orderDirection: desc orderBy: volumeUSD) {
-          id
-          token0 {
-            id
-            symbol
-            name
-          }
-          token1 {
-            id
-            symbol
-            name
-          }
-        }
-      }
-      `,
+      query: tokensQuery(first),
     },
   })
     .then((res) => res.data)
@@ -46,29 +40,10 @@ export function useTokenList({ first }: TokenListParam) {
 
   // console.log('[useTokenList] with result:', data);
 
-  /**
-   * [TODO][FIX]: remove duplicates */
-  if (data && Array.isArray(data.data.pools)) {
-    data.data.pools.map((tokenPool: any, index: any) => {
-      const token0 = {
-        id: tokenPool.token0.id,
-        name: tokenPool.token0.name,
-        symbol: tokenPool.token0.symbol,
-      };
-      const token1 = {
-        id: tokenPool.token1.id,
-        name: tokenPool.token1.name,
-        symbol: tokenPool.token1.symbol,
-      };
-
-      result.push(token0);
-      result.push(token1);
+  if (data && Array.isArray(data.data?.tokens)) {
+    data.data.tokens.map((token: any, index: any) => {
+      result.push(token);
     });
-
-    // const aFunc = (arr: {id: any, name: any, symbol: any}[]) => {
-    //   return arr.filter((value, index) => arr.indexOf(value) === index)
-    // }
-
   } else {
     result = [];
   }
