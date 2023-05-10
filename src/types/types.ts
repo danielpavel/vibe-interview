@@ -6,5 +6,6 @@ export type Token = {
 
 export type SelectedTokenPair = {
    token0: Token | undefined,
-   token1: Token | undefined
+   token1: Token | undefined,
+   lastSelected: Token | undefined,
 }

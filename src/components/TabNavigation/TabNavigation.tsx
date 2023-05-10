@@ -23,7 +23,7 @@ const TabNavigation: FC<Props> = ({ tabs }) => {
   return (
     <div className="flex flex-col">
       {/* Tabs */}
-      <div className="flex flex-row">
+      <div className="flex flex-row border-b-2">
         {tabs?.map((tab, index) => (
           <div className='w-full bg-slate-50' key={index}>
             <Tab
@@ -31,6 +31,7 @@ const TabNavigation: FC<Props> = ({ tabs }) => {
               key={index}
               onClick={handleTabOnClick}
               disabled={activeTab === `${tab.id}`}
+              active={activeTab === `${tab.id}`}
             >
               {tab.title}
             </Tab>

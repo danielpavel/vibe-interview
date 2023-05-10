@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import { SelectedTokenPair, Token } from '../../types/types';
 import { useRecoilState } from 'recoil'
 import { tokenPair } from '../../recoil'
+import { tokensEqual } from '@/utils/utils';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement>{
   tokenName?: any,
@@ -15,23 +16,11 @@ const emptyToken: Token = {
   id: '', name: '', symbol: ''
 }
 
-const tokensEqual = (token1: Token, token2: Token) => {
-  return (
-    token1.id === token2.id &&
-    token1.name === token2.name &&
-    token1.symbol === token2.symbol
-  );
-}
-
 const isTokenSelected = (pair: SelectedTokenPair | undefined, token: Token) => {
   if (!pair || (!pair.token0 && !pair.token1)) return false;
 
-  let result = false;
-  if (pair.token0) result = tokensEqual(token, pair.token0)
-  if (pair.token1) result = tokensEqual(token, pair.token1)
-
-  return result
-}
+  return tokensEqual(token, pair.token1) || tokensEqual(token, pair.token0);
+};
 
 const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
   const [token, setToken] = useState<Token>(emptyToken);
@@ -47,37 +36,63 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
   }, [])
 
   const handleTokenOnClick = (e: any) => {
-    console.log('[handleTokenOnClick] with token', token);
+    console.log("[handleTokenOnClick] with token", token);
 
-    if (!selectedTokenPair || !selectedTokenPair.token0) {
+    if (!selectedTokenPair) {
       setSelectedTokenPair({
         token0: token,
         token1: undefined,
-      })
-    } else if (!selectedTokenPair.token1) {
-      setSelectedTokenPair({
-        ...selectedTokenPair,
-        token1: token,
-      })
-    } else if (isTokenSelected(selectedTokenPair, token)) {
-      if (tokensEqual(selectedTokenPair.token0, token)) {
-        setSelectedTokenPair({
-          ...selectedTokenPair,
-          token0: undefined,
-        });
+        lastSelected: token,
+      });
+    } else {
+      if (selectedTokenPair.token0 && selectedTokenPair.token1) {
+        setSelectedTokenPair(undefined);
+        return;
       }
-      if (tokensEqual(selectedTokenPair.token1, token)) {
-        setSelectedTokenPair({
-          ...selectedTokenPair,
-          token1: undefined,
-        });
+
+      if (!tokensEqual(selectedTokenPair.lastSelected, token)) {
+        if (!selectedTokenPair.token0) {
+          setSelectedTokenPair({
+            ...selectedTokenPair,
+            token0: token,
+            lastSelected: token,
+          });
+        }
+        if (!selectedTokenPair.token1) {
+          setSelectedTokenPair({
+            ...selectedTokenPair,
+            token1: token,
+            lastSelected: token,
+          });
+        }
+      } else {
+        /* Find out which token to desellect */
+        if (tokensEqual(selectedTokenPair.token0, token)) {
+          setSelectedTokenPair({
+            ...selectedTokenPair,
+            token0: undefined,
+            lastSelected: undefined,
+          });
+        }
+        if (tokensEqual(selectedTokenPair.token1, token)) {
+          setSelectedTokenPair({
+            ...selectedTokenPair,
+            token1: undefined,
+            lastSelected: undefined,
+          });
+        }
       }
     }
-  }
+  };
 
   useEffect(() => {
     setTokenSelected(isTokenSelected(selectedTokenPair, token));
+    console.log('[token] ')
   }, [selectedTokenPair]);
+
+  useEffect(() => {
+    console.log('[tokenSelected]', token, ' selected: ', tokenSelected);
+  }, [tokenSelected])
 
   return (
     <button
