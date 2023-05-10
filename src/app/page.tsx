@@ -1,5 +1,9 @@
-import { TabNavigation } from '@components/index';
-import { LPPositionTabContent, MigrateTabContent, TokenListTabContent } from '@components/TabNavigation';
+"use client";
+
+import { TabNavigation } from '@/components/index';
+import { LPPositionTabContent, MigrateTabContent, TokenListTabContent } from '@/components/TabNavigation';
+import { useEffect } from 'react';
+import { RecoilRoot } from 'recoil';
 
 export default function Home() {
   const tabs = [
@@ -20,10 +24,24 @@ export default function Home() {
     },
   ];
 
+  useEffect(() => {
+    const _ = async () => {
+      // const res = await quote();
+      // console.log('[Pool quotes]:', res);
+
+    }
+
+    _();
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col items-center p-24">
       <div className="w-full">
-        <TabNavigation tabs={tabs} />
+
+        <RecoilRoot>
+          <TabNavigation tabs={tabs} />
+        </RecoilRoot>
+
       </div>
     </div>
   );

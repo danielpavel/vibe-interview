@@ -1,10 +1,12 @@
 import { FC } from 'react'
-import LPCell from '@components/LPCell/LPCell';
+import LPCell from '@/components/LPCell/LPCell';
 
 interface Props {
 }
 
 const LPPositionTabContent: FC<Props> = ({ }) => {
+
+
   const positions = [
     {
       pair: {
