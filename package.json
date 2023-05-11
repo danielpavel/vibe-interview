@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.0.18",
     "@sushiswap/default-token-list": "^41.5.0",
     "@sushiswap/sdk": "^5.0.0-canary.116",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/node": "20.1.1",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",

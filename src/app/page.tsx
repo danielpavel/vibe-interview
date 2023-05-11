@@ -2,6 +2,7 @@ import axios from 'axios'
 import {Token} from '@/types/types'
 import React from 'react'
 import TokenListTabContent from '../components/TabNavigation/TokenListTabContent'
+import Wallet from '@components/Wallet'
 
 interface ApiResponse {
   data: {
@@ -19,7 +20,6 @@ const tokensQuery = (first: number) => `
   }
 }
 `
-
 
 async function fetchTokens(tokensNumber = 10) {
   const result = await axios<ApiResponse>({
@@ -39,10 +39,12 @@ export default async function Home() {
   const {tokens} = await fetchTokens(10)
 
   return (
-    <div className="flex min-h-screen flex-col items-center p-24">
-      <div className="w-full">
-        <TokenListTabContent tokens={tokens} />
+    <>
+      <div className="flex min-h-screen flex-col items-center p-24">
+        <div className="w-full">
+          <TokenListTabContent tokens={tokens} />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
