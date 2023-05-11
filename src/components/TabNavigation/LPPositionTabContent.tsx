@@ -11,6 +11,8 @@ import {LPositionCell} from '../Cells'
 import {useUniswapV2PairContract} from '@/hooks/UniswapContracts/usePairContract'
 import {Pair, CurrencyAmount} from '@sushiswap/sdk'
 import {useTokenPair} from '@hooks/useTokenPair'
+import { useMetamask } from '@/hooks/useMetamask'
+import { useLPPosition } from '@/hooks/useLPPosition'
 
 interface Props {
   liquidityPools: Pool[]
@@ -18,13 +20,18 @@ interface Props {
 
 const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
   const [selectedTokenPair, setSelectedTokenPair] = useTokenPair()
-  const positions = useLiqudityPositions({
-    first: 10,
-    tokenPair: {
-      token0: selectedTokenPair?.token0,
-      token1: selectedTokenPair?.token1,
-    },
-  })
+  const [lpPosition, setLpPosition] = useLPPosition()
+
+  const {
+    state: {status, isMetamaskInstalled, wallet},
+  } = useMetamask()
+  // const positions = useLiqudityPositions({
+  //   first: 10,
+  //   tokenPair: {
+  //     token0: selectedTokenPair?.token0,
+  //     token1: selectedTokenPair?.token1,
+  //   },
+  // })
 
   // const position = useLPPosition({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}})
   const pairContract = useUniswapV2PairContract({
@@ -54,23 +61,29 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
         )
 
         const totalSupply = await pairContract.contract.totalSupply()
+        const liquidityToken = await pair.liquidityToken
+        let balance;
+        if (wallet) {
+          balance = await pairContract.contract.balanceOf(wallet)
+        } else {
+          balance = 0
+        }
 
-        // return {
-        //   liquidityToken: pair.liquidityToken,
-        //   totalSupply: totalSupply,
-        // };
-        console.log('[pairContract] totalSupply', totalSupply)
-        console.log('[pairContract] pair', pair)
-      } else {
-        // return {
-        //   liquidityToken: undefined,
-        //   totalSupply: undefined,
-        // };
+        setLpPosition({
+          pair: selectedTokenPair,
+          totalSupply: totalSupply,
+          liquidityToken: liquidityToken,
+          balance: balance
+        })
       }
     }
 
     getLP()
   }, [pairContract])
+
+  useEffect(() => {
+    console.log('LP Position', lpPosition);
+  }, [lpPosition])
 
   return (
     <div className="flex py-20 px-5 w-full bg-cyan-100 justify-center">
@@ -104,12 +117,12 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-yellow-50 shadow-lg border">
-          <div className="flex h-[50px] justify-between items-center p-4 gap-x-2 font-mono text-md border-b border-black shadow-sm">
-            <div>Id</div>
-            <div>Liquidity</div>
-            <div>Token0</div>
-            <div>Token1</div>
+        <div className="rounded-t-2xl bg-yellow-50 border-t border-r border-l overflow-hidden">
+          <div className="flex h-[50px] justify-between items-center p-4 gap-x-2 font-mono text-sm border-b border-black shadow-sm">
+            <div>LP Token</div>
+            <div>User Balance</div>
+            <div>Token0 Amount</div>
+            <div>Token1 Amount</div>
           </div>
 
           {/* {
@@ -129,11 +142,13 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
                 <LPoolCell key={idx} pool={pool} />
               ))
           } */}
-          {selectedTokenPair?.token0 &&
+          {/* {selectedTokenPair?.token0 &&
             selectedTokenPair?.token1 &&
             positions.map((pos, index) => (
               <LPositionCell position={pos} key={index} />
-            ))}
+            ))} */}
+
+          <LPositionCell position={lpPosition} />
         </div>
       </div>
     </div>

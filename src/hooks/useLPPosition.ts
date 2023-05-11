@@ -1,45 +1,33 @@
-import { Token } from "@/types/types";
-import { useUniswapV2PairContract } from "./UniswapContracts/usePairContract";
-import { Pair } from '@sushiswap/sdk'
-import { CurrencyAmount } from "@uniswap/sdk-core";
+import {LPPos} from '@/types/types'
+import {useCallback, useEffect, useState} from 'react'
 
-interface LPPosParams {
-  tokenPair?: { token0?: Token, token1?: Token}
-}
+/**
+ * useState hook that takes from session storage and updates the value in session storage
+ * on every update
+ */
+export const useLPPosition = (): [
+  LPPos | null | undefined,
+  (setLPPos?: LPPos | null) => void
+] => {
+  const [lpPos, setLpPos] = useState<
+    LPPos | null | undefined
+  >(null)
 
-export async function useLPPosition({ tokenPair }: LPPosParams) {
-  const pairContract = useUniswapV2PairContract({ tokenPair: tokenPair });
-
-  if (pairContract.contract && pairContract.token0 && pairContract.token1) {
-    /*
-    const reserves = await pairContract.contract.getReserves();
-
-    const token0Addr = await pairContract.contract.token0();
-    const token1Addr = await pairContract.contract.token1();
-    const token0 = [pairContract.token0, pairContract.token1].find(
-      (token) => token.address === token0Addr
-    );
-    const token1 = [pairContract.token0, pairContract.token1].find(
-      (token) => token.address === token1Addr
-    );
-
-    const pair = new Pair(
-      CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
-      CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
-    );
-
-    const totalSupply = await pairContract.contract.totalSupply()
-
-    return {
-      liquidityToken: pair.liquidityToken,
-      totalSupply: totalSupply
+  const setLPPosition = useCallback((pos?: LPPos | null) => {
+    if (pos) {
+      sessionStorage.setItem('lpPos', JSON.stringify(pos))
+    } else {
+      sessionStorage.removeItem('lpPos')
     }
-  } else {
+    setLpPos(lpPos)
+  }, [])
 
-    return {
-      liquidityToken: undefined,
-      totalSupply: undefined
+  useEffect(() => {
+    const pos = sessionStorage.getItem('lpPos')
+    if (pos) {
+      setLpPos(JSON.parse(pos))
     }
-  }
-  */
+  }, [])
+
+  return [lpPos, setLPPosition]
 }

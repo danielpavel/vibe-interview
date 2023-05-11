@@ -19,3 +19,12 @@ export type SelectedTokenPair = {
    token1: Token | undefined,
    lastSelected: Token | undefined,
 }
+
+export type LPPos = {
+  pair?: SelectedTokenPair | null,
+  totalSupply: any,
+  liquidityToken: any,
+  balance: any,
+  token0Supply?: any,
+  token1Supply?: any,
+}
