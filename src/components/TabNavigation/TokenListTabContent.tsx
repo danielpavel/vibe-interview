@@ -2,14 +2,14 @@
 import TokenCard from '@/components/TokenCard/TokenCard'
 import {FC, useState} from 'react'
 import {SelectedTokenPair, Token} from '@/types/types'
+import {useTokenPair} from '@hooks/useTokenPair'
 
 interface Props {
   tokens: Token[]
 }
 
 const TokenListTabContent: FC<Props> = ({tokens}) => {
-  const [selectedTokenPair, setSelectedTokenPair] =
-    useState<SelectedTokenPair>()
+  const [selectedTokenPair, setSelectedTokenPair] = useTokenPair()
 
   return (
     <div className="p-24 w-full bg-slate-900 flex justify-center">

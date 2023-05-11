@@ -1,5 +1,5 @@
 import * as UniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import { getProvider } from '@/app/libs/provider';
+import { getProvider } from '@/libs/provider';
 import { Contract, ethers } from 'ethers';
 import { useUniswapV2FactoryContract } from './useFactoryContract';
 import { Token, ChainId, Pair } from '@sushiswap/sdk';

@@ -1,6 +1,6 @@
 import * as UniswapV2FactoryAbi from '@uniswap/v2-core/build/IUniswapV2Factory.json'
-import { V2_FACTORY_ADDRESS } from '@/app/libs/constants';
-import { getProvider } from '@/app/libs/provider';
+import { V2_FACTORY_ADDRESS } from '@/libs/constants';
+import { getProvider } from '@/libs/provider';
 import { Contract, ethers } from 'ethers';
 
 export function useUniswapV2FactoryContract(): Contract | undefined | null {

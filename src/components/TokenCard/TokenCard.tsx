@@ -10,7 +10,7 @@ interface Props {
   tokenId?: any
   imageURL?: any
   decimals?: any
-  selectedTokenPair?: SelectedTokenPair
+  selectedTokenPair?: SelectedTokenPair | null
   setSelectedTokenPair: (selectedTokenPair?: SelectedTokenPair) => void
 }
 
@@ -20,7 +20,10 @@ const emptyToken: Token = {
   symbol: '',
 }
 
-const isTokenSelected = (pair: SelectedTokenPair | undefined, token: Token) => {
+const isTokenSelected = (
+  pair: SelectedTokenPair | null | undefined,
+  token: Token
+) => {
   if (!pair || (!pair.token0 && !pair.token1)) return false
 
   return tokensEqual(token, pair.token1) || tokensEqual(token, pair.token0)
@@ -47,7 +50,7 @@ const TokenCard: FC<Props> = ({
       name: tokenName,
       symbol: symbol,
       imgUri: imgUri,
-      decimals
+      decimals,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

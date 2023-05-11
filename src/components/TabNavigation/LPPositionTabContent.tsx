@@ -1,23 +1,23 @@
 'use client'
 
-import { FC, useEffect, useState } from 'react'
-import Image from 'next/image';
-import { useLiqudityPositions } from '@/hooks/useLiquidityPositions';
+import {FC, useEffect, useState} from 'react'
+import Image from 'next/image'
+import {useLiqudityPositions} from '@/hooks/useLiquidityPositions'
 
 import {Pool, SelectedTokenPair} from '@/types/types'
-import { LPositionCell } from '../Cells';
+import {LPositionCell} from '../Cells'
 
 // import { useLPPosition } from '@/hooks/useLPPosition';
-import { useUniswapV2PairContract } from '@/hooks/UniswapContracts/usePairContract';
-import { Pair, CurrencyAmount} from '@sushiswap/sdk'
+import {useUniswapV2PairContract} from '@/hooks/UniswapContracts/usePairContract'
+import {Pair, CurrencyAmount} from '@sushiswap/sdk'
+import {useTokenPair} from '@hooks/useTokenPair'
 
 interface Props {
   liquidityPools: Pool[]
 }
 
 const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
-  const [selectedTokenPair, setSelectedTokenPair] =
-    useState<SelectedTokenPair>()
+  const [selectedTokenPair, setSelectedTokenPair] = useTokenPair()
   const positions = useLiqudityPositions({
     first: 10,
     tokenPair: {
@@ -27,35 +27,40 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
   })
 
   // const position = useLPPosition({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}})
-  const pairContract = useUniswapV2PairContract({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}});
+  const pairContract = useUniswapV2PairContract({
+    tokenPair: {
+      token0: selectedTokenPair?.token0,
+      token1: selectedTokenPair?.token1,
+    },
+  })
 
   useEffect(() => {
     const getLP = async () => {
       if (pairContract.contract && pairContract.token0 && pairContract.token1) {
-        const reserves = await pairContract.contract.getReserves();
+        const reserves = await pairContract.contract.getReserves()
 
-        const token0Addr = await pairContract.contract.token0();
-        const token1Addr = await pairContract.contract.token1();
+        const token0Addr = await pairContract.contract.token0()
+        const token1Addr = await pairContract.contract.token1()
         const token0 = [pairContract.token0, pairContract.token1].find(
           (token) => token.address === token0Addr
-        );
+        )
         const token1 = [pairContract.token0, pairContract.token1].find(
           (token) => token.address === token1Addr
-        );
+        )
 
         const pair = new Pair(
           CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
           CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
-        );
+        )
 
-        const totalSupply = await pairContract.contract.totalSupply();
+        const totalSupply = await pairContract.contract.totalSupply()
 
         // return {
         //   liquidityToken: pair.liquidityToken,
         //   totalSupply: totalSupply,
         // };
-        console.log('[pairContract] totalSupply', totalSupply);
-        console.log('[pairContract] pair', pair);
+        console.log('[pairContract] totalSupply', totalSupply)
+        console.log('[pairContract] pair', pair)
       } else {
         // return {
         //   liquidityToken: undefined,
@@ -64,8 +69,8 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
       }
     }
 
-    getLP();
-  }, [pairContract]);
+    getLP()
+  }, [pairContract])
 
   return (
     <div className="flex py-20 px-5 w-full bg-cyan-100 justify-center">
