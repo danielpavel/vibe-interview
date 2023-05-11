@@ -60,17 +60,12 @@ const fetcher = (args: any[]) => {
   const token0 = args[2]
   const token1 = args[3]
 
-  console.log("[fetcher][url]", url);
-  console.log("[fetcher][first]", first);
-  console.log("[fetcher][token0]", token0);
-  console.log("[fetcher][token1]", token1);
-
   if (!first || !token0 || !token1) {
-    console.log("[fetcher][error] with query", positionsQuery(first, token0, token1));
+    // console.log("[fetcher][error] with query", positionsQuery(first, token0, token1));
     return
   }
 
-  console.log("[fetcher] with query", positionsQuery(first, token0, token1));
+  // console.log("[fetcher] with query", positionsQuery(first, token0, token1));
 
   return axios({
     url: url,
@@ -91,10 +86,10 @@ export function useLiqudityPositions({ first, tokenPair }: LiquiditiPositionPara
   let result: any[] = [];
 
   useEffect(() => {
-  console.log('[useLiquidityPositions] with first:', first, ' token0:', tokenPair?.token0, ' token1:', tokenPair?.token1);
+  // console.log('[useLiquidityPositions] with first:', first, ' token0:', tokenPair?.token0, ' token1:', tokenPair?.token1);
   }, [])
 
-  console.log('[useLiquidityPositions] with result:', data);
+  // console.log('[useLiquidityPositions] with result:', data);
 
   if (data && Array.isArray(data.data?.positions)) {
     data.data.positions.map((position: any, index: any) => {
@@ -113,7 +108,7 @@ export function useLiqudityPositions({ first, tokenPair }: LiquiditiPositionPara
     result = [];
   }
 
-  console.log('[useTokenPool] with returning:', result);
+  // console.log('[useTokenPool] with returning:', result);
 
   return result;
 }

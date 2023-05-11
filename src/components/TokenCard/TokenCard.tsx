@@ -4,6 +4,7 @@ import { SelectedTokenPair, Token } from '../../types/types';
 import { useRecoilState } from 'recoil'
 import { tokenPair } from '../../recoil'
 import { tokensEqual } from '@/utils/utils';
+import * as tokenList from '@sushiswap/default-token-list'
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement>{
   tokenName?: any,
@@ -28,10 +29,13 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
   const [selectedTokenPair, setSelectedTokenPair] = useRecoilState(tokenPair);
 
   useEffect(() => {
+    const imgUri = tokenList.tokens.filter((token) => tokenId === token.address.toLocaleLowerCase())[0]?.logoURI
+
     setToken({
       id: tokenId,
       name: tokenName,
-      symbol: symbol
+      symbol: symbol,
+      imgUri: imgUri
     })
   }, [])
 
@@ -102,18 +106,16 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
       } hover:scale-105 duration-150 bg-slate-50`}
       onClick={handleTokenOnClick}
     >
-      <div className="w-full h-3/5 bg-orange-100 rounded-2xl">
-        {/* Token image */}
+      <div className="object-fill overflow-hidden w-full h-3/5 rounded-2xl">
+        <Image
+          src={token.imgUri ?? './no-img.svg'}
+          alt={`${token.name} Logo`}
+          className="dark:invert"
+          width={200}
+          height={200}
+          priority
+        />
       </div>
-
-      {/* <Image
-        src="/vercel.svg"
-        alt="Vercel Logo"
-        className="dark:invert"
-        width={100}
-        height={50}
-        priority
-      /> */}
 
       <div className="p-2 w-full h-2/5 flex flex-col justify-center">
         <div className="font-mono text-lg">{tokenName}</div>

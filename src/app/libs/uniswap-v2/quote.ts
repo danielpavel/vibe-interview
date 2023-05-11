@@ -7,7 +7,7 @@ import {
   POOL_FACTORY_CONTRACT_ADDRESS,
   QUOTER_CONTRACT_ADDRESS,
 } from '../libs/constants'
-import { getProvider } from './provider'
+import { getProvider } from '../provider'
 import { toReadableAmount, fromReadableAmount } from './convertion'
 
 export async function quote() {
@@ -17,11 +17,7 @@ export async function quote() {
     getProvider()
   )
 
-  console.log('[quote] contrat abi', quoterContract.interface);
-
   const poolConstants = await getPoolConstants()
-
-  console.log('[quote] pool constants', poolConstants);
 
   const quotedAmountOut = await quoterContract.callStatic.quoteExactInputSingle(
     poolConstants.token0,

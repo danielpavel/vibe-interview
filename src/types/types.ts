@@ -2,6 +2,7 @@ export type Token = {
   id: string,
   name: string,
   symbol: string,
+  imgUri?: string
 }
 
 export type SelectedTokenPair = {

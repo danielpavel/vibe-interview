@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
-import { USDC_TOKEN, WETH_TOKEN } from './constants'
+import { USDC_TOKEN, WETH_TOKEN } from '../constants'
 
 // Inputs that configure this example to run
 export interface ExampleConfig {
