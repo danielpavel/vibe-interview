@@ -1,57 +1,67 @@
-import Image from 'next/image';
-import { FC, useEffect, useState } from 'react'
-import { SelectedTokenPair, Token } from '../../types/types';
-import { useRecoilState } from 'recoil'
-import { tokenPair } from '../../recoil'
-import { tokensEqual } from '@/utils/utils';
+import Image from 'next/image'
+import {FC, useEffect, useState} from 'react'
+import {SelectedTokenPair, Token} from '@/types/types'
+import {tokensEqual} from '@/utils/utils'
 import * as tokenList from '@sushiswap/default-token-list'
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement>{
-  tokenName?: any,
-  symbol?: any,
-  tokenId?: any,
+interface Props {
+  tokenName?: any
+  symbol?: any
+  tokenId?: any
   imageURL?: any
+  selectedTokenPair?: SelectedTokenPair
+  setSelectedTokenPair: (selectedTokenPair?: SelectedTokenPair) => void
 }
 
 const emptyToken: Token = {
-  id: '', name: '', symbol: ''
+  id: '',
+  name: '',
+  symbol: '',
 }
 
 const isTokenSelected = (pair: SelectedTokenPair | undefined, token: Token) => {
-  if (!pair || (!pair.token0 && !pair.token1)) return false;
+  if (!pair || (!pair.token0 && !pair.token1)) return false
 
-  return tokensEqual(token, pair.token1) || tokensEqual(token, pair.token0);
-};
+  return tokensEqual(token, pair.token1) || tokensEqual(token, pair.token0)
+}
 
-const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
-  const [token, setToken] = useState<Token>(emptyToken);
-  const [tokenSelected, setTokenSelected] = useState<boolean>(false);
-  const [selectedTokenPair, setSelectedTokenPair] = useRecoilState(tokenPair);
+const TokenCard: FC<Props> = ({
+  symbol,
+  tokenName,
+  tokenId,
+  setSelectedTokenPair,
+  selectedTokenPair,
+}) => {
+  const [token, setToken] = useState<Token>(emptyToken)
+  const [tokenSelected, setTokenSelected] = useState<boolean>(false)
 
   useEffect(() => {
-    const imgUri = tokenList.tokens.filter((token) => tokenId === token.address.toLocaleLowerCase())[0]?.logoURI
+    const imgUri = tokenList.tokens.filter(
+      (token) => tokenId === token.address.toLocaleLowerCase()
+    )[0]?.logoURI
 
     setToken({
       id: tokenId,
       name: tokenName,
       symbol: symbol,
-      imgUri: imgUri
+      imgUri: imgUri,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleTokenOnClick = (e: any) => {
-    console.log("[handleTokenOnClick] with token", token);
+    console.log('[handleTokenOnClick] with token', token)
 
     if (!selectedTokenPair) {
       setSelectedTokenPair({
         token0: token,
         token1: undefined,
         lastSelected: token,
-      });
+      })
     } else {
       if (selectedTokenPair.token0 && selectedTokenPair.token1) {
-        setSelectedTokenPair(undefined);
-        return;
+        setSelectedTokenPair(undefined)
+        return
       }
 
       if (!tokensEqual(selectedTokenPair.lastSelected, token)) {
@@ -60,14 +70,14 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
             ...selectedTokenPair,
             token0: token,
             lastSelected: token,
-          });
+          })
         }
         if (!selectedTokenPair.token1) {
           setSelectedTokenPair({
             ...selectedTokenPair,
             token1: token,
             lastSelected: token,
-          });
+          })
         }
       } else {
         /* Find out which token to desellect */
@@ -76,33 +86,29 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
             ...selectedTokenPair,
             token0: undefined,
             lastSelected: undefined,
-          });
+          })
         }
         if (tokensEqual(selectedTokenPair.token1, token)) {
           setSelectedTokenPair({
             ...selectedTokenPair,
             token1: undefined,
             lastSelected: undefined,
-          });
+          })
         }
       }
     }
-  };
+  }
 
   useEffect(() => {
-    setTokenSelected(isTokenSelected(selectedTokenPair, token));
-  }, [selectedTokenPair]);
-
-  useEffect(() => {
-    // console.log('[tokenSelected]', token, ' selected: ', tokenSelected);
-  }, [tokenSelected])
+    setTokenSelected(isTokenSelected(selectedTokenPair, token))
+  }, [selectedTokenPair, token])
 
   return (
     <button
       className={`p-1 w-[150px] min-w-[150px] h-[240px] rounded-2xl ${
         !isTokenSelected(selectedTokenPair, token)
-          ? "border"
-          : "border-2 border-green-300 shadow-lg"
+          ? 'border'
+          : 'border-2 border-green-300 shadow-lg'
       } hover:scale-105 duration-150 bg-slate-50`}
       onClick={handleTokenOnClick}
     >
@@ -122,7 +128,7 @@ const TokenCard: FC<Props> = ({ symbol, tokenName, tokenId }) => {
         <div className="font-mono text-sm text-slate-400">{symbol}</div>
       </div>
     </button>
-  );
+  )
 }
 
 export default TokenCard

@@ -1,6 +1,6 @@
 import { Token } from "@/types/types";
 
-export const tokensEqual = (token1: Token | undefined, token2: Token | undefined) => {
+export const tokensEqual = (token1?: Token, token2?: Token) => {
   if (!token1 || !token2) return false;
 
   return (

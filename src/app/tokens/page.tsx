@@ -1,7 +1,5 @@
-import axios from 'axios'
 import {Token} from '@/types/types'
-import React from 'react'
-import TokenListTabContent from '../components/TabNavigation/TokenListTabContent'
+import axios from 'axios'
 
 interface ApiResponse {
   data: {
@@ -19,7 +17,6 @@ const tokensQuery = (first: number) => `
 }
 `
 
-
 async function fetchTokens(tokensNumber = 10) {
   const result = await axios<ApiResponse>({
     url: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
@@ -34,14 +31,7 @@ async function fetchTokens(tokensNumber = 10) {
   return result.data.data
 }
 
-export default async function Home() {
+export default async function Tokens() {
   const {tokens} = await fetchTokens(10)
-
-  return (
-    <div className="flex min-h-screen flex-col items-center p-24">
-      <div className="w-full">
-        <TokenListTabContent tokens={tokens} />
-      </div>
-    </div>
-  )
+  return <div>Tokens</div>
 }

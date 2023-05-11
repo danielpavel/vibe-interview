@@ -1,106 +1,114 @@
-import { FC, useEffect } from 'react'
-import LPoolCell from '@/components/Cells/LPoolCell';
-import Image from 'next/image';
-import { useLiquidityPools } from '@/hooks/useTokenPools';
-import { useRecoilState } from 'recoil'
-import { tokenPair } from '../../recoil'
-import { tokensEqual } from '@/utils/utils';
-import { useLiqudityPositions } from '@/hooks/useLiquidityPositions';
-import { LPositionCell } from '../Cells';
+'use client'
+import {FC, useEffect, useState} from 'react'
+import Image from 'next/image'
+import {useLiquidityPools} from '@/hooks/useTokenPools'
+import {useRecoilState} from 'recoil'
+import {tokenPair} from '@/recoil'
+import {useLiqudityPositions} from '@/hooks/useLiquidityPositions'
+import {LPositionCell} from '../Cells'
 
-import { ethers } from 'ethers'
-import { Token, ChainId, Pair, Route, CurrencyAmount} from '@sushiswap/sdk'
+import {ethers} from 'ethers'
+import {Token, ChainId, Pair, Route, CurrencyAmount} from '@sushiswap/sdk'
 import * as uniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import { getProvider } from '@/app/libs/provider';
-import { useLPPosition } from '@/hooks/useLPPosition';
-import { useUniswapV2PairContract } from '@/hooks/UniswapContracts/usePairContract';
-// import { USDC_TOKEN, WETH_TOKEN } from '@/app/libs/constants';
-
-// import  { Pair } from '@uniswap/v2-sdk'
-// import { SupportedChainId  } from '@uniswap/sdk-core'
+import { getProvider } from '@/app/libs/provider'
+import {useUniswapV2PairContract} from '@/hooks/UniswapContracts/usePairContract'
+import {Pool, SelectedTokenPair} from '@/types/types'
 
 interface Props {
+  liquidityPools: Pool[]
 }
 
-const LPPositionTabContent: FC<Props> = ({ }) => {
-  const liquidityPools = useLiquidityPools({ first: 10 });
-  const [selectedTokenPair, setSelectedTokenPair] = useRecoilState(tokenPair);
+const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
+  const [selectedTokenPair, setSelectedTokenPair] =
+    useState<SelectedTokenPair>()
   const positions = useLiqudityPositions({
     first: 10,
     tokenPair: {
       token0: selectedTokenPair?.token0,
       token1: selectedTokenPair?.token1,
     },
-  });
+  })
   // const pos = useLPPosition({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}})
-  const pair = useUniswapV2PairContract({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1} });
+  const pair = useUniswapV2PairContract({
+    tokenPair: {
+      token0: selectedTokenPair?.token0,
+      token1: selectedTokenPair?.token1,
+    },
+  })
 
   useEffect(() => {
-    console.log("[useEffectLPPositionTabContent]");
+    console.log('[useEffectLPPositionTabContent]')
     const getPairData = async () => {
       if (pair) {
         // const LPToken = await pair.liquidityToken();
 
-        const token0 = await pair.token0();
-        const token1 = await pair.token1();
+        const token0 = await pair.token0()
+        const token1 = await pair.token1()
 
         console.log('[useEffectLPPositionTabContent] token0', token0)
         console.log('[useEffectLPPositionTabContent] token1', token1)
-        console.log('[useEffectLPPositionTabContent] totalSupply', await pair.totalSupply())
+        console.log(
+          '[useEffectLPPositionTabContent] totalSupply',
+          await pair.totalSupply()
+        )
       } else {
         console.log('[useEffectLPPositionTabContent] Pair not found')
       }
-    };
+    }
 
     getPairData()
-  }, [pair]);
+  }, [pair])
 
   useEffect(() => {
     const WETH_TOKEN = new Token(
       ChainId.MAINNET,
-      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       18,
-      "WETH",
-      "Wrapped Ether"
-    );
+      'WETH',
+      'Wrapped Ether'
+    )
     const USDC_TOKEN = new Token(
       ChainId.MAINNET,
-      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       6,
-      "USDC",
-      "USD//C"
-    );
-    const tokenPairAddress = Pair.getAddress(WETH_TOKEN, USDC_TOKEN);
+      'USDC',
+      'USD//C'
+    )
+    const tokenPairAddress = Pair.getAddress(WETH_TOKEN, USDC_TOKEN)
 
     const fetchUniswap = async () => {
       const uniV2PairContract = new ethers.Contract(
         tokenPairAddress,
         uniswapV2PairABI.abi,
         getProvider()
-      );
-      const reserves = await uniV2PairContract.getReserves();
+      )
+      const reserves = await uniV2PairContract.getReserves()
 
-      const token0Addr = await uniV2PairContract.token0();
-      const token1Addr = await uniV2PairContract.token1();
+      const token0Addr = await uniV2PairContract.token0()
+      const token1Addr = await uniV2PairContract.token1()
       const token0 = [WETH_TOKEN, USDC_TOKEN].find(
         (token) => token.address === token0Addr
-      );
+      )
       const token1 = [WETH_TOKEN, USDC_TOKEN].find(
         (token) => token.address === token1Addr
-      );
+      )
 
       const pair = new Pair(
         CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
         CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
-      );
+      )
 
-      const route = new Route([pair], WETH_TOKEN, USDC_TOKEN);
+      const route = new Route([pair], WETH_TOKEN, USDC_TOKEN)
 
-      console.log(`[fetchUniswap] 1 WETH can be swapped for ${route.midPrice.toSignificant(6)} USDC coins`);
-    };
+      console.log(
+        `[fetchUniswap] 1 WETH can be swapped for ${route.midPrice.toSignificant(
+          6
+        )} USDC coins`
+      )
+    }
 
     // fetchUniswap();
- }, [])
+  }, [])
 
   return (
     <div className="flex py-20 px-5 w-full bg-cyan-100 justify-center">
@@ -159,17 +167,15 @@ const LPPositionTabContent: FC<Props> = ({ }) => {
                 <LPoolCell key={idx} pool={pool} />
               ))
           } */}
-          {
-            (selectedTokenPair?.token0 && selectedTokenPair?.token1) &&
-              positions.map((pos, index) =>
-                <LPositionCell position={pos} key={index}/>
-              )
-          }
-
+          {selectedTokenPair?.token0 &&
+            selectedTokenPair?.token1 &&
+            positions.map((pos, index) => (
+              <LPositionCell position={pos} key={index} />
+            ))}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default LPPositionTabContent
