@@ -15,6 +15,7 @@ const tokensQuery = (first: number) => `
     id
     name
     symbol
+    decimals
   }
 }
 `

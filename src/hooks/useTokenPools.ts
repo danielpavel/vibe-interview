@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import axios from 'axios'
 
-const UNISWAP_V3_GRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3';
 const UNISWAP_V2_GRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
 
 interface TokenPoolsParam {
@@ -43,7 +42,7 @@ const fetcher = (url: string, first: number = 20) => {
 
 export function useLiquidityPools({ first }: TokenPoolsParam) {
   const { data, error, isLoading } = useSWR(
-    [UNISWAP_V3_GRAPH_ENDPOINT, first],
+    [UNISWAP_V2_GRAPH_ENDPOINT, first],
     fetcher
   );
   let result: any[] = [];

@@ -3,6 +3,7 @@ export type Token = {
   name: string,
   symbol: string,
   imgUri?: string
+  decimals?: string,
 }
 
 export interface Pool {

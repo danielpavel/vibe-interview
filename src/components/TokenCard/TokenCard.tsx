@@ -9,6 +9,7 @@ interface Props {
   symbol?: any
   tokenId?: any
   imageURL?: any
+  decimals?: any
   selectedTokenPair?: SelectedTokenPair
   setSelectedTokenPair: (selectedTokenPair?: SelectedTokenPair) => void
 }
@@ -29,6 +30,7 @@ const TokenCard: FC<Props> = ({
   symbol,
   tokenName,
   tokenId,
+  decimals,
   setSelectedTokenPair,
   selectedTokenPair,
 }) => {
@@ -45,6 +47,7 @@ const TokenCard: FC<Props> = ({
       name: tokenName,
       symbol: symbol,
       imgUri: imgUri,
+      decimals
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

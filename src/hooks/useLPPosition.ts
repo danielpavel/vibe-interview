@@ -1,26 +1,45 @@
 import { Token } from "@/types/types";
 import { useUniswapV2PairContract } from "./UniswapContracts/usePairContract";
-import { useEffect } from "react";
+import { Pair } from '@sushiswap/sdk'
+import { CurrencyAmount } from "@uniswap/sdk-core";
 
 interface LPPosParams {
   tokenPair?: { token0?: Token, token1?: Token}
 }
 
-export function useLPPosition({ tokenPair }: LPPosParams) {
-  const pair = useUniswapV2PairContract({ tokenPair: tokenPair });
+export async function useLPPosition({ tokenPair }: LPPosParams) {
+  const pairContract = useUniswapV2PairContract({ tokenPair: tokenPair });
 
-  const getLPPos = async () => {
+  if (pairContract.contract && pairContract.token0 && pairContract.token1) {
+    /*
+    const reserves = await pairContract.contract.getReserves();
 
-    console.log('[useLPPosition] with LPToken', await pair?.liquidityToken.address);
+    const token0Addr = await pairContract.contract.token0();
+    const token1Addr = await pairContract.contract.token1();
+    const token0 = [pairContract.token0, pairContract.token1].find(
+      (token) => token.address === token0Addr
+    );
+    const token1 = [pairContract.token0, pairContract.token1].find(
+      (token) => token.address === token1Addr
+    );
 
-    // return pair;
-  }
+    const pair = new Pair(
+      CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
+      CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
+    );
 
-  useEffect(() => {
-    if (pair) {
-      getLPPos()
+    const totalSupply = await pairContract.contract.totalSupply()
+
+    return {
+      liquidityToken: pair.liquidityToken,
+      totalSupply: totalSupply
     }
-  }, [pair])
+  } else {
 
-  return pair
+    return {
+      liquidityToken: undefined,
+      totalSupply: undefined
+    }
+  }
+  */
 }

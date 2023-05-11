@@ -38,6 +38,7 @@ const TokenListTabContent: FC<Props> = ({tokens}) => {
             symbol={t.symbol}
             tokenName={t.name}
             tokenId={t.id}
+            decimals={t.decimals}
           />
         ))}
       </div>

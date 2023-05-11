@@ -3,7 +3,6 @@ import axios from 'axios'
 import { SelectedTokenPair, Token } from '@/types/types';
 import { useEffect } from 'react';
 
-const UNISWAP_V3_GRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3';
 const UNISWAP_V2_GRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
 
 interface LiquiditiPositionParams {
@@ -80,7 +79,7 @@ const fetcher = (args: any[]) => {
 
 export function useLiqudityPositions({ first, tokenPair }: LiquiditiPositionParams) {
   const { data, error, isLoading } = useSWR(
-    [UNISWAP_V3_GRAPH_ENDPOINT, first, tokenPair?.token0, tokenPair?.token1],
+    [UNISWAP_V2_GRAPH_ENDPOINT, first, tokenPair?.token0, tokenPair?.token1],
     fetcher
   );
   let result: any[] = [];

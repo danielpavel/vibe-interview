@@ -1,18 +1,15 @@
 'use client'
-import {FC, useEffect, useState} from 'react'
-import Image from 'next/image'
-import {useLiquidityPools} from '@/hooks/useTokenPools'
-import {useRecoilState} from 'recoil'
-import {tokenPair} from '@/recoil'
-import {useLiqudityPositions} from '@/hooks/useLiquidityPositions'
-import {LPositionCell} from '../Cells'
 
-import {ethers} from 'ethers'
-import {Token, ChainId, Pair, Route, CurrencyAmount} from '@sushiswap/sdk'
-import * as uniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import { getProvider } from '@/app/libs/provider'
-import {useUniswapV2PairContract} from '@/hooks/UniswapContracts/usePairContract'
+import { FC, useEffect, useState } from 'react'
+import Image from 'next/image';
+import { useLiqudityPositions } from '@/hooks/useLiquidityPositions';
+
 import {Pool, SelectedTokenPair} from '@/types/types'
+import { LPositionCell } from '../Cells';
+
+// import { useLPPosition } from '@/hooks/useLPPosition';
+import { useUniswapV2PairContract } from '@/hooks/UniswapContracts/usePairContract';
+import { Pair, CurrencyAmount} from '@sushiswap/sdk'
 
 interface Props {
   liquidityPools: Pool[]
@@ -28,87 +25,47 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
       token1: selectedTokenPair?.token1,
     },
   })
-  // const pos = useLPPosition({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}})
-  const pair = useUniswapV2PairContract({
-    tokenPair: {
-      token0: selectedTokenPair?.token0,
-      token1: selectedTokenPair?.token1,
-    },
-  })
+
+  // const position = useLPPosition({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}})
+  const pairContract = useUniswapV2PairContract({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}});
 
   useEffect(() => {
-    console.log('[useEffectLPPositionTabContent]')
-    const getPairData = async () => {
-      if (pair) {
-        // const LPToken = await pair.liquidityToken();
+    const getLP = async () => {
+      if (pairContract.contract && pairContract.token0 && pairContract.token1) {
+        const reserves = await pairContract.contract.getReserves();
 
-        const token0 = await pair.token0()
-        const token1 = await pair.token1()
+        const token0Addr = await pairContract.contract.token0();
+        const token1Addr = await pairContract.contract.token1();
+        const token0 = [pairContract.token0, pairContract.token1].find(
+          (token) => token.address === token0Addr
+        );
+        const token1 = [pairContract.token0, pairContract.token1].find(
+          (token) => token.address === token1Addr
+        );
 
-        console.log('[useEffectLPPositionTabContent] token0', token0)
-        console.log('[useEffectLPPositionTabContent] token1', token1)
-        console.log(
-          '[useEffectLPPositionTabContent] totalSupply',
-          await pair.totalSupply()
-        )
+        const pair = new Pair(
+          CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
+          CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
+        );
+
+        const totalSupply = await pairContract.contract.totalSupply();
+
+        // return {
+        //   liquidityToken: pair.liquidityToken,
+        //   totalSupply: totalSupply,
+        // };
+        console.log('[pairContract] totalSupply', totalSupply);
+        console.log('[pairContract] pair', pair);
       } else {
-        console.log('[useEffectLPPositionTabContent] Pair not found')
+        // return {
+        //   liquidityToken: undefined,
+        //   totalSupply: undefined,
+        // };
       }
     }
 
-    getPairData()
-  }, [pair])
-
-  useEffect(() => {
-    const WETH_TOKEN = new Token(
-      ChainId.MAINNET,
-      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      18,
-      'WETH',
-      'Wrapped Ether'
-    )
-    const USDC_TOKEN = new Token(
-      ChainId.MAINNET,
-      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      6,
-      'USDC',
-      'USD//C'
-    )
-    const tokenPairAddress = Pair.getAddress(WETH_TOKEN, USDC_TOKEN)
-
-    const fetchUniswap = async () => {
-      const uniV2PairContract = new ethers.Contract(
-        tokenPairAddress,
-        uniswapV2PairABI.abi,
-        getProvider()
-      )
-      const reserves = await uniV2PairContract.getReserves()
-
-      const token0Addr = await uniV2PairContract.token0()
-      const token1Addr = await uniV2PairContract.token1()
-      const token0 = [WETH_TOKEN, USDC_TOKEN].find(
-        (token) => token.address === token0Addr
-      )
-      const token1 = [WETH_TOKEN, USDC_TOKEN].find(
-        (token) => token.address === token1Addr
-      )
-
-      const pair = new Pair(
-        CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
-        CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
-      )
-
-      const route = new Route([pair], WETH_TOKEN, USDC_TOKEN)
-
-      console.log(
-        `[fetchUniswap] 1 WETH can be swapped for ${route.midPrice.toSignificant(
-          6
-        )} USDC coins`
-      )
-    }
-
-    // fetchUniswap();
-  }, [])
+    getLP();
+  }, [pairContract]);
 
   return (
     <div className="flex py-20 px-5 w-full bg-cyan-100 justify-center">
