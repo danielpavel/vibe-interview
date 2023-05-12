@@ -2,7 +2,8 @@ import * as UniswapV2PairABI from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { getProvider } from '@/libs/provider';
 import { Contract, ethers } from 'ethers';
 import { useUniswapV2FactoryContract } from './useFactoryContract';
-import { Token, ChainId, Pair } from '@sushiswap/sdk';
+import { Pair } from '@uniswap/v2-sdk';
+import { Token, SupportedChainId } from '@uniswap/sdk-core';
 
 export type VToken = {
   id: string,
@@ -24,14 +25,14 @@ export function useUniswapV2PairContract({
   if (tokenPair && tokenPair.token0 && tokenPair.token1) {
     console.log('[useUniswapV2PairContract]', tokenPair);
     const token0 = new Token(
-      ChainId.MAINNET,
+      SupportedChainId.MAINNET,
       tokenPair.token0.id,
       Number(tokenPair.token0.decimals),
       tokenPair.token0.symbol,
       tokenPair.token0.name,
     );
     const token1 = new Token(
-      ChainId.MAINNET,
+      SupportedChainId.MAINNET,
       tokenPair.token1.id,
       Number(tokenPair.token1.decimals),
       tokenPair.token1.symbol,
@@ -39,9 +40,6 @@ export function useUniswapV2PairContract({
     );
     const tokenPairAddress = Pair.getAddress(token0, token1);
 
-    // const reserves = await uniV2PairContract.getReserves();
-    // const pair = factory?.getPair(tokenPair?.token0?.id, tokenPair?.token1?.id);
-    // const pair = factory?.getPair(tokenPair?.token0?.id, tokenPair?.token1?.id);
     const uniswapV2PairContract = new ethers.Contract(
       tokenPairAddress,
       UniswapV2PairABI.abi,

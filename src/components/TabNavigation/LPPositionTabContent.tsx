@@ -9,10 +9,10 @@ import {LPositionCell} from '../Cells'
 
 // import { useLPPosition } from '@/hooks/useLPPosition';
 import {useUniswapV2PairContract} from '@/hooks/UniswapContracts/usePairContract'
-import {Pair, CurrencyAmount} from '@sushiswap/sdk'
 import {useTokenPair} from '@hooks/useTokenPair'
 import { useMetamask } from '@/hooks/useMetamask'
 import { useLPPosition } from '@/hooks/useLPPosition'
+import { buildLpPosition } from '@/utils/utils'
 
 interface Props {
   liquidityPools: Pool[]
@@ -42,43 +42,15 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
   })
 
   useEffect(() => {
-    const getLP = async () => {
-      if (pairContract.contract && pairContract.token0 && pairContract.token1) {
-        const reserves = await pairContract.contract.getReserves()
-
-        const token0Addr = await pairContract.contract.token0()
-        const token1Addr = await pairContract.contract.token1()
-        const token0 = [pairContract.token0, pairContract.token1].find(
-          (token) => token.address === token0Addr
-        )
-        const token1 = [pairContract.token0, pairContract.token1].find(
-          (token) => token.address === token1Addr
-        )
-
-        const pair = new Pair(
-          CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
-          CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
-        )
-
-        const totalSupply = await pairContract.contract.totalSupply()
-        const liquidityToken = await pair.liquidityToken
-        let balance;
-        if (wallet) {
-          balance = await pairContract.contract.balanceOf(wallet)
-        } else {
-          balance = 0
-        }
-
-        setLpPosition({
-          pair: selectedTokenPair,
-          totalSupply: totalSupply,
-          liquidityToken: liquidityToken,
-          balance: balance
-        })
-      }
+    if (
+      selectedTokenPair &&
+      selectedTokenPair.token0 &&
+      selectedTokenPair.token1
+    ) {
+      buildLpPosition(pairContract, wallet, setLpPosition)
+    } else {
+      setLpPosition(undefined)
     }
-
-    getLP()
   }, [pairContract])
 
   useEffect(() => {

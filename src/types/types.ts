@@ -1,3 +1,5 @@
+import { Pair } from "@uniswap/v2-sdk";
+
 export type Token = {
   id: string,
   name: string,
@@ -21,10 +23,9 @@ export type SelectedTokenPair = {
 }
 
 export type LPPos = {
-  pair?: SelectedTokenPair | null,
+  pair?: Pair | null,
   totalSupply: any,
-  liquidityToken: any,
   balance: any,
-  token0Supply?: any,
-  token1Supply?: any,
+  token0Token: any, // this would be Token from @uniswap/sdk-core
+  token1Token: any, // this would be Token from @uniswap/sdk-core
 }

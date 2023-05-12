@@ -1,50 +1,57 @@
 'use client'
-import {FC, useState} from 'react'
-import {SelectedTokenPair} from '@/types/types'
-import { Pair, CurrencyAmount } from '@sushiswap/sdk';
+import {FC, useEffect, useState} from 'react'
+
+import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { useUniswapV2PairContract } from '@/hooks/UniswapContracts/usePairContract';
 import { Input } from '../Input';
 import { useLPPosition } from '@/hooks/useLPPosition';
+import { useTokenPair } from '@/hooks/useTokenPair'
 
 interface Props {}
 
 const MigrateTabContent: FC<Props> = ({}) => {
-  const [selectedTokenPair, setSelectedTokenPair] =
-    useState<SelectedTokenPair>()
+  const [selectedTokenPair, setSelectedTokenPair] = useTokenPair()
   const [loading, setLoading] = useState<boolean>(false);
   const [approvedPair, setApprovedPair] = useState<boolean>(false);
-  const [token0Amount, setToken0Amount] = useState<string>('');
-  const [token1Amount, setToken1Amount] = useState<string>('');
+
+  const [token0Amount, setToken0Amount] = useState<CurrencyAmount<Token>>();
+  const [token1Amount, setToken1Amount] = useState<CurrencyAmount<Token>>();
+
   const pairContract = useUniswapV2PairContract({ tokenPair: { token0: selectedTokenPair?.token0, token1: selectedTokenPair?.token1}});
   const [lpPosition, _] = useLPPosition();
 
   const getPoolShare = async () => {
-    if (pairContract.contract && pairContract.token0 && pairContract.token1) {
-      setLoading(true);
-      const reserves = await pairContract.contract.getReserves();
+    setLoading(true);
 
-      const token0Addr = await pairContract.contract.token0()
-      const token1Addr = await pairContract.contract.token1()
-      const token0 = [pairContract.token0, pairContract.token1].find(
-        (token) => token.address === token0Addr
-      )
-      const token1 = [pairContract.token0, pairContract.token1].find(
-        (token) => token.address === token1Addr
-      )
+    const pairData = lpPosition?.pair;
+    const token0 = lpPosition?.token0Token
+    const token1 = lpPosition?.token1Token
 
-      const pair = new Pair(
-        CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
-        CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
-      )
+    const token0Amount = pairData?.getLiquidityValue(
+      token0,
+      CurrencyAmount.fromRawAmount(pairData.liquidityToken, lpPosition?.totalSupply),
+      CurrencyAmount.fromRawAmount(pairData.liquidityToken, lpPosition?.balance),
+    )
+    const token1Amount = pairData?.getLiquidityValue(
+      token1,
+      CurrencyAmount.fromRawAmount(pairData.liquidityToken, lpPosition?.totalSupply),
+      CurrencyAmount.fromRawAmount(pairData.liquidityToken, lpPosition?.balance),
+    )
 
-      const totalSupply = await pairContract.contract.totalSupply()
-      console.log('[MigrateTabContent][getPoolShare]', pair.liquidityToken)
+    setToken0Amount(token0Amount);
+    setToken1Amount(token1Amount);
 
-      setToken0Amount('')
-      setToken1Amount('')
-      setLoading(false);
-    }
+    setLoading(false);
   }
+
+  useEffect(() => {
+    if (lpPosition) {
+      getPoolShare();
+    } else {
+      // some error - come back to this later
+    }
+  }, [])
 
   const handleLPInputChange = () => {
     console.log('[handleLPInputChange]')
@@ -74,7 +81,7 @@ const MigrateTabContent: FC<Props> = ({}) => {
         </button>
 
         <div className='flex mb-12 font-mono items-center gap-x-4'>
-          LP Token: {lpPosition?.liquidityToken.symbol}
+          LP Token: {lpPosition?.pair?.liquidityToken.symbol}
           <Input
             type="number"
             value={'LP Tokens Value'}
