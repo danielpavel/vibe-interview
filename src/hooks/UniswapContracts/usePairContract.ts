@@ -14,7 +14,7 @@ export type VToken = {
 }
 
 interface Params {
-  tokenPair?: {token0?: VToken, token1?: VToken}
+  tokenPair?: {token0?: Token, token1?: Token}
 }
 
 export function useUniswapV2PairContract({
@@ -23,18 +23,18 @@ export function useUniswapV2PairContract({
   // const factory = useUniswapV2FactoryContract();
 
   if (tokenPair && tokenPair.token0 && tokenPair.token1) {
-    console.log('[useUniswapV2PairContract]', tokenPair);
+    // console.log('[useUniswapV2PairContract]', tokenPair);
     const token0 = new Token(
       SupportedChainId.MAINNET,
-      tokenPair.token0.id,
-      Number(tokenPair.token0.decimals),
+      tokenPair.token0.address,
+      tokenPair.token0.decimals,
       tokenPair.token0.symbol,
       tokenPair.token0.name,
     );
     const token1 = new Token(
       SupportedChainId.MAINNET,
-      tokenPair.token1.id,
-      Number(tokenPair.token1.decimals),
+      tokenPair.token1.address,
+      tokenPair.token1.decimals,
       tokenPair.token1.symbol,
       tokenPair.token1.name,
     );

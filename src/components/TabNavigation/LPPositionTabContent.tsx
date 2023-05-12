@@ -21,10 +21,10 @@ interface Props {
 const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
   const [selectedTokenPair, setSelectedTokenPair] = useTokenPair()
   const [lpPosition, setLpPosition] = useLPPosition()
-
   const {
     state: {status, isMetamaskInstalled, wallet},
   } = useMetamask()
+
   // const positions = useLiqudityPositions({
   //   first: 10,
   //   tokenPair: {
@@ -42,19 +42,21 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
   })
 
   useEffect(() => {
-    if (
-      selectedTokenPair &&
-      selectedTokenPair.token0 &&
-      selectedTokenPair.token1
-    ) {
-      buildLpPosition(pairContract, wallet, setLpPosition)
-    } else {
-      setLpPosition(undefined)
+    const getPosition = async () => {
+      const position = await buildLpPosition(
+        pairContract,
+        wallet,
+        null
+      )
+
+      if (position) setLpPosition(position)
     }
-  }, [pairContract])
+
+    getPosition()
+  }, [pairContract, wallet, selectedTokenPair])
 
   useEffect(() => {
-    console.log('LP Position', lpPosition);
+    console.log('LP Position changed', lpPosition);
   }, [lpPosition])
 
   return (

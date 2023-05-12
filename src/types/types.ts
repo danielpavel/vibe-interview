@@ -1,6 +1,8 @@
+import { Token, CurrencyAmount } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
+import { Contract } from "ethers";
 
-export type Token = {
+export type TokenResponse = {
   id: string,
   name: string,
   symbol: string,
@@ -24,8 +26,11 @@ export type SelectedTokenPair = {
 
 export type LPPos = {
   pair?: Pair | null,
+  pairContract: Contract | undefined | null,
   totalSupply: any,
   balance: any,
-  token0Token: any, // this would be Token from @uniswap/sdk-core
-  token1Token: any, // this would be Token from @uniswap/sdk-core
+  token0Token: Token, // this would be Token from @uniswap/sdk-core
+  token1Token: Token, // this would be Token from @uniswap/sdk-core
+  token0Amount: CurrencyAmount<Token> // this `any` should be converted to token
+  token1Amount: CurrencyAmount<Token> // this `any` should be converted to token
 }

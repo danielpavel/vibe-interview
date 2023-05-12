@@ -1,30 +1,26 @@
 import Image from 'next/image'
 import {FC, useEffect, useState} from 'react'
-import {SelectedTokenPair, Token} from '@/types/types'
+import {SelectedTokenPair, } from '@/types/types'
 import {tokensEqual} from '@/utils/utils'
 import * as tokenList from '@sushiswap/default-token-list'
+import { SupportedChainId, Token } from '@uniswap/sdk-core'
+import { name } from '@sushiswap/sdk'
 
 interface Props {
   tokenName?: any
   symbol?: any
-  tokenId?: any
+  address?: any
   imageURL?: any
   decimals?: any
   selectedTokenPair?: SelectedTokenPair | null
   setSelectedTokenPair: (selectedTokenPair?: SelectedTokenPair) => void
 }
 
-const emptyToken: Token = {
-  id: '',
-  name: '',
-  symbol: '',
-}
-
 const isTokenSelected = (
   pair: SelectedTokenPair | null | undefined,
-  token: Token
+  token?: Token
 ) => {
-  if (!pair || (!pair.token0 && !pair.token1)) return false
+  if (!pair || (!pair.token0 && !pair.token1) || !token) return false
 
   return tokensEqual(token, pair.token1) || tokensEqual(token, pair.token0)
 }
@@ -32,26 +28,31 @@ const isTokenSelected = (
 const TokenCard: FC<Props> = ({
   symbol,
   tokenName,
-  tokenId,
+  address,
   decimals,
   setSelectedTokenPair,
   selectedTokenPair,
 }) => {
-  const [token, setToken] = useState<Token>(emptyToken)
+  const [token, setToken] = useState<Token>()
   const [tokenSelected, setTokenSelected] = useState<boolean>(false)
+  const [tokenImgUri, setTokenImgUri] = useState<string>('')
 
   useEffect(() => {
     const imgUri = tokenList.tokens.filter(
-      (token) => tokenId === token.address.toLocaleLowerCase()
+      (token) => address === token.address.toLocaleLowerCase()
     )[0]?.logoURI
 
-    setToken({
-      id: tokenId,
-      name: tokenName,
-      symbol: symbol,
-      imgUri: imgUri,
-      decimals,
-    })
+    setTokenImgUri(imgUri ?? './no-img.svg')
+
+    const tokenObj = new Token(
+      SupportedChainId.MAINNET,
+      address,
+      Number(decimals),
+      symbol,
+      tokenName,
+    );
+
+    setToken(tokenObj)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -114,14 +115,14 @@ const TokenCard: FC<Props> = ({
       className={`p-1 w-[150px] min-w-[150px] h-[240px] rounded-2xl ${
         !isTokenSelected(selectedTokenPair, token)
           ? 'border'
-          : 'border-2 border-green-300 shadow-lg'
+          : 'border-2 border-green-600 bg-green-400/50 shadow-lg scale-105'
       } hover:scale-105 duration-150 bg-slate-50`}
       onClick={handleTokenOnClick}
     >
       <div className="object-fill overflow-hidden w-full h-3/5 rounded-2xl">
         <Image
-          src={token.imgUri ?? './no-img.svg'}
-          alt={`${token.name} Logo`}
+          src={tokenImgUri}
+          alt={`${token?.name} Logo`}
           className="dark:invert"
           width={200}
           height={200}

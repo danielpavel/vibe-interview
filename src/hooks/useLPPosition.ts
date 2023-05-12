@@ -7,7 +7,7 @@ import {useCallback, useEffect, useState} from 'react'
  */
 export const useLPPosition = (): [
   LPPos | null | undefined,
-  (setLPPos?: LPPos | null) => void
+  (lpPos?: LPPos | null) => void
 ] => {
   const [lpPos, setLpPos] = useState<
     LPPos | null | undefined
@@ -19,6 +19,7 @@ export const useLPPosition = (): [
     } else {
       sessionStorage.removeItem('lpPos')
     }
+    // console.log('[inside setting position][setting]', lpPos)
     setLpPos(lpPos)
   }, [])
 

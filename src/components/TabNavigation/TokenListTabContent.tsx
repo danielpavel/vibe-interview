@@ -1,18 +1,19 @@
 'use client'
 import TokenCard from '@/components/TokenCard/TokenCard'
-import {FC, useState} from 'react'
-import {SelectedTokenPair, Token} from '@/types/types'
+import {FC} from 'react'
+// import {SelectedTokenPair} from '@/types/types'
 import {useTokenPair} from '@hooks/useTokenPair'
+import { TokenResponse } from '@/types/types'
 
 interface Props {
-  tokens: Token[]
+  tokens: TokenResponse[]
 }
 
 const TokenListTabContent: FC<Props> = ({tokens}) => {
   const [selectedTokenPair, setSelectedTokenPair] = useTokenPair()
 
   return (
-    <div className="p-24 w-full bg-slate-900 flex justify-center">
+    <div className="p-24 w-full flex justify-center rounded-2xl border border-slate-400">
       <div className="flex flex-col items-center">
         <div className="font-mono text-2xl p-5 text-center">
           Your Token Selection:
@@ -37,7 +38,7 @@ const TokenListTabContent: FC<Props> = ({tokens}) => {
             key={idx}
             symbol={t.symbol}
             tokenName={t.name}
-            tokenId={t.id}
+            address={t.id}
             decimals={t.decimals}
           />
         ))}
