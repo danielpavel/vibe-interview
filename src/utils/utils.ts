@@ -1,5 +1,6 @@
 import { LPPos } from "@/types/types";
-import { CurrencyAmount } from "@uniswap/sdk-core";
+import JSBI from "jsbi";
+import { CurrencyAmount, } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
 import { Token } from "@uniswap/sdk-core";
 import { BigNumber, ethers } from "ethers";
@@ -75,7 +76,9 @@ export async function buildLpPosition(
         token0Token: token0,
         token1Token: token1,
         token0Amount: token0Amount?.toExact(),
-        token1Amount: token1Amount?.toExact()
+        token1Amount: token1Amount?.toExact(),
+        token0AmountCurrency: token0Amount,
+        token1AmountCurrency: token1Amount
       }
       // console.log('[buildLpPosition] position built with', result);
 
@@ -92,8 +95,8 @@ export async function buildLpPosition(
       //
       return result
     } catch (error) {
-      return null
       console.log('[buildLpPosition][error]', error);
+      return null
     }
   } else {
     console.log('[buildLpPosition][params missing]', pairContract);
@@ -108,4 +111,18 @@ export const formatAmount = (amount?: BigNumber | string, token?: Token) => {
   }
 
   return ''
+}
+
+export function calculateSlippageAmount(value: CurrencyAmount<Token> | undefined, slippage: number): any {
+  if (!value) {
+      return console.log('value cannot be undefined')
+  }
+  if (slippage < 0 || slippage > 10000) {
+      throw Error(`Unexpected slippage value: ${slippage}`)
+  }
+  console.log('calculateSlippageAmount:', typeof value.toExact());
+  return [
+      JSBI.divide(JSBI.multiply(JSBI.BigInt(value.toExact()), JSBI.BigInt(10000 - slippage)), JSBI.BigInt(10000)),
+      JSBI.divide(JSBI.multiply(JSBI.BigInt(value.toExact()), JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000))
+  ]
 }

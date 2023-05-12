@@ -45,5 +45,5 @@ const fetchPools = async (poolsNumber = 20) => {
 
 export default async function LpPositions() {
   const result = await fetchPools(20)
-  return <LPPositionTabContent liquidityPools={result.pools ?? []} />
+  return <LPPositionTabContent />
 }

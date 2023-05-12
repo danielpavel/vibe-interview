@@ -60,7 +60,7 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
 
   return (
     <div className="flex py-20 px-5 w-full h-screen justify-center">
-      <div className="w-3/4 px-14 border h-fit border-slate-300 rounded-2xl py-10">
+      <div className="w-3/4 px-14 h-fit py-10 border-slate-300 border rounded-2xl shadow-lg">
         <div className="font-mono text-lg">Your token pair selection:</div>
 
         <div className="font-mono text-sm mt-2 mb-4">

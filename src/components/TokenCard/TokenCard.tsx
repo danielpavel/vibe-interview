@@ -113,9 +113,9 @@ const TokenCard: FC<Props> = ({
     <button
       className={`p-1 w-[150px] min-w-[150px] h-[240px] rounded-2xl ${
         !isTokenSelected(selectedTokenPair, token)
-          ? 'border'
-          : 'border-2 border-green-600 bg-green-400/60 shadow-lg scale-105'
-      } hover:scale-105 duration-150 bg-slate-50`}
+          ? 'border bg-slate-50'
+          : 'border-2 border-green-600 bg-green-300/60 shadow-magical scale-105'
+      } hover:scale-105 duration-150`}
       onClick={handleTokenOnClick}
     >
       <div className="object-fill overflow-hidden w-full h-3/5 rounded-2xl">
