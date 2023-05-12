@@ -48,19 +48,19 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
         setLpPosition
       )
 
-      if (position) setLpPosition(position)
+      setLpPosition(position)
     }
 
     getPosition()
-  }, [pairContract, wallet, selectedTokenPair])
+  }, [wallet, selectedTokenPair])
 
   useEffect(() => {
     console.log('LP Position changed', lpPosition);
   }, [lpPosition])
 
   return (
-    <div className="flex py-20 px-5 w-full justify-center">
-      <div className="w-3/4 px-14 border border-slate-300 rounded-2xl py-5">
+    <div className="flex py-20 px-5 w-full h-screen justify-center">
+      <div className="w-3/4 px-14 border h-fit border-slate-300 rounded-2xl py-10">
         <div className="font-mono text-lg">Your token pair selection:</div>
 
         <div className="font-mono text-sm mt-2 mb-4">
@@ -90,39 +90,15 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
           </div>
         </div>
 
-        <div className="rounded-t-2xl bg-yellow-50 border-t border-r border-l overflow-hidden">
+        <div className="rounded-t-2xl bg-yellow-100 border-t border-r border-l overflow-hidden">
           <div className="flex h-[50px] justify-between items-center p-4 gap-x-2 font-mono text-sm border-b border-black shadow-sm">
             <div>LP Token</div>
-            <div>User Balance</div>
+            <div>LP Balance</div>
             <div>Token0 Amount</div>
             <div>Token1 Amount</div>
           </div>
-
-          {/* {
-            (selectedTokenPair?.token0 && selectedTokenPair?.token1) ?
-              liquidityPools
-                .filter((pool, idx) => {
-                  return (
-                    (tokensEqual(pool.token0, selectedTokenPair.token0) &&
-                    tokensEqual(pool.token0, selectedTokenPair.token1)) ||
-                    (tokensEqual(pool.token1, selectedTokenPair.token0) &&
-                    tokensEqual(pool.token0, selectedTokenPair.token1))
-                  )
-                })
-                .map((pool, idx) => <LPoolCell key={idx} pool={pool} />)
-                :
-              liquidityPools.map((pool, idx) => (
-                <LPoolCell key={idx} pool={pool} />
-              ))
-          } */}
-          {/* {selectedTokenPair?.token0 &&
-            selectedTokenPair?.token1 &&
-            positions.map((pos, index) => (
-              <LPositionCell position={pos} key={index} />
-            ))} */}
-
-          <LPositionCell position={lpPosition} />
         </div>
+        <LPositionCell position={lpPosition} />
       </div>
     </div>
   )

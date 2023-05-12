@@ -8,7 +8,7 @@ interface Props {
 
 const LPoolCell: FC<Props> = ({ position }) => {
   return (
-    <div className='flex h-[75px] justify-between items-center p-4 gap-x-2'>
+    <div className='flex h-[65px] bg-yellow-100 border-b border-l border-r rounded-b-2xl justify-between items-center p-4 gap-x-2'>
       <div className='font-mono text-sm'>
         {position?.pair?.liquidityToken.symbol}
       </div>

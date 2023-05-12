@@ -43,11 +43,11 @@ const MigrateTabContent: FC<Props> = ({}) => {
         setLpPosition
       )
 
-      if (position) setLpPosition(position)
+      setLpPosition(position)
     }
 
     getPosition()
-  }, [pairContract, wallet, selectedTokenPair])
+  }, [wallet, selectedTokenPair])
 
   const handleLPInputChange = (event: any) => {
     console.log('[handleLPInputChange]')
@@ -88,8 +88,8 @@ const MigrateTabContent: FC<Props> = ({}) => {
   }
 
   return (
-    <div className="flex py-20 px-5 w-full justify-center">
-      <div className="w-3/4 px-14 py-5 border-slate-300 border rounded-2xl">
+    <div className="flex py-20 px-5 w-full h-screen justify-center">
+      <div className="w-3/4 px-14 h-fit py-10 border-slate-300 border rounded-2xl">
         <div className="font-mono text-lg">Your token pair selection:</div>
         <div className="font-mono text-sm mt-2 mb-4">
           {selectedTokenPair?.token0?.symbol}/
