@@ -2,7 +2,6 @@
 
 import {FC, useEffect, useState} from 'react'
 import Image from 'next/image'
-import {useLiqudityPositions} from '@/hooks/useLiquidityPositions'
 
 import {Pool, SelectedTokenPair} from '@/types/types'
 import {LPositionCell} from '../Cells'
@@ -15,7 +14,7 @@ import { useLPPosition } from '@/hooks/useLPPosition'
 import { buildLpPosition } from '@/utils/utils'
 
 interface Props {
-  liquidityPools: Pool[]
+  liquidityPools?: Pool[]
 }
 
 const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
@@ -46,7 +45,7 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
       const position = await buildLpPosition(
         pairContract,
         wallet,
-        null
+        setLpPosition
       )
 
       if (position) setLpPosition(position)
@@ -60,8 +59,8 @@ const LPPositionTabContent: FC<Props> = ({liquidityPools}) => {
   }, [lpPosition])
 
   return (
-    <div className="flex py-20 px-5 w-full bg-cyan-100 justify-center">
-      <div className="w-3/4 px-14 py-5">
+    <div className="flex py-20 px-5 w-full justify-center">
+      <div className="w-3/4 px-14 border border-slate-300 rounded-2xl py-5">
         <div className="font-mono text-lg">Your token pair selection:</div>
 
         <div className="font-mono text-sm mt-2 mb-4">

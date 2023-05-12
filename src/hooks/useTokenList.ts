@@ -1,14 +1,7 @@
 import useSWR from 'swr'
 import axios from 'axios'
 
-<<<<<<< Updated upstream
-const UNISWAP_V3_GRAPH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3'
-const UNISWAP_V2_GRAPH_ENDPOINT =
-  'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2'
-=======
 const UNISWAP_V2_GRAPH_ENDPOINT = 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2';
->>>>>>> Stashed changes
 
 interface TokenListParam {
   first?: number
@@ -38,15 +31,9 @@ const fetcher = (url: any, first: number = 10) => {
     .catch((err) => err)
 }
 
-<<<<<<< Updated upstream
-export function useTokenList({first}: TokenListParam) {
-  const {data, error, isLoading} = useSWR(
-    [UNISWAP_V3_GRAPH_ENDPOINT, first],
-=======
 export function useTokenList({ first }: TokenListParam) {
   const { data, error, isLoading } = useSWR(
     [UNISWAP_V2_GRAPH_ENDPOINT, first],
->>>>>>> Stashed changes
     fetcher
   )
   let result: any[] = []

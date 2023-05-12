@@ -25,14 +25,14 @@ function MobileNav() {
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-10" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-slate-400 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
           <div className="flex items-center justify-between">
-            <Link href="/" className="-m-1.5 p-1.5 text-gray-100">
+            <Link href="/" className="-m-1.5 p-1.5 text-gray-200">
               <span>Vibe-Interview</span>
             </Link>
             <button
               type="button"
-              className="-m-2.5 rounded-md p-2.5 text-gray-100"
+              className="-m-2.5 rounded-md p-2.5 text-gray-200"
               onClick={() => setMobileMenuOpen(false)}
             >
               <span className="sr-only">Close menu</span>
@@ -44,19 +44,19 @@ function MobileNav() {
               <div className="space-y-2 py-6">
                 <Link
                   href="/"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium leading-7 text-gray-100 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium leading-7 text-gray-100 hover:bg-slate-600"
                 >
                   Tokens
                 </Link>
                 <Link
                   href="/lp-positions"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium leading-7 text-gray-100 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium leading-7 text-gray-100 hover:bg-slate-600"
                 >
-                  Posts
+                  Lp Position
                 </Link>
                 <Link
                   href="/migrations"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium leading-7 text-gray-100 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-medium leading-7 text-gray-100 hover:bg-slate-600"
                 >
                   Migrations
                 </Link>
@@ -78,7 +78,6 @@ export function Navbar() {
       >
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Softwarelama</span>
             <div>
               <p className={'h-8 w-auto font-medium text-gray-100'}>Vibe</p>
             </div>
@@ -88,19 +87,19 @@ export function Navbar() {
         <nav className="hidden lg:flex lg:gap-x-12">
           <Link
             href="/"
-            className="text-sm font-medium leading-6 text-gray-100"
+            className="text-sm font-medium leading-6 text-gray-100 hover:text-slate-600 hover:bg-slate-300"
           >
             Tokens
           </Link>
           <Link
             href="/lp-positions"
-            className="text-sm font-medium leading-6 text-gray-100"
+            className="text-sm font-medium leading-6 text-gray-100 hover:text-slate-600 hover:bg-slate-300"
           >
             LP Positions
           </Link>
           <Link
             href="/migrations"
-            className="text-sm font-medium leading-6 text-gray-100"
+            className="text-sm font-medium leading-6 text-gray-100 hover:text-slate-600 hover:bg-slate-300"
           >
             Migrations
           </Link>

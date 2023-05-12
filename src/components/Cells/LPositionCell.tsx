@@ -1,18 +1,9 @@
 import { LPPos } from '@/types/types';
-import { Token } from '@uniswap/sdk-core';
-import { BigNumber, ethers } from 'ethers';
+import { formatAmount } from '@/utils/utils';
 import { FC } from 'react'
 
 interface Props {
   position?: LPPos | null,
-}
-
-const formatAmount = (amount?: BigNumber | string, token?: Token) => {
-  if (amount && token) {
-    return parseFloat(ethers.utils.formatUnits(amount, token.decimals))
-  }
-
-  return ''
 }
 
 const LPoolCell: FC<Props> = ({ position }) => {
@@ -25,10 +16,10 @@ const LPoolCell: FC<Props> = ({ position }) => {
         {formatAmount(position?.balance, position?.pair?.liquidityToken)}
       </div>
       <div className='font-mono text-sm'>
-        {position?.pair?.token0?.symbol}: {/*position?.token0Amount?.toExact()*/}
+        {position?.pair?.token0?.symbol}: {position?.token0Amount}
       </div>
       <div className='font-mono text-sm'>
-        {position?.pair?.token1?.symbol}: {/*position?.token1Amount?.toExact()*/}
+        {position?.pair?.token1?.symbol}: {position?.token1Amount}
       </div>
     </div>
   )

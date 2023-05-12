@@ -2,6 +2,7 @@ import { LPPos } from "@/types/types";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { Pair } from "@uniswap/v2-sdk";
 import { Token } from "@uniswap/sdk-core";
+import { BigNumber, ethers } from "ethers";
 
 export const tokensEqual = (token1?: Token, token2?: Token) => {
   if (!token1 || !token2) return false;
@@ -61,8 +62,9 @@ export async function buildLpPosition(
       CurrencyAmount.fromRawAmount(pair.liquidityToken, totalSupply),
       CurrencyAmount.fromRawAmount(pair.liquidityToken, balance),
     )
-    // console.log('[buildLpPosition] userTokenABalance: ', token0Amount.toExact());
-    // console.log('[buildLpPosition] userTokenBBalance: ', token1Amount.toExact());
+
+    // console.log('[buildLpPosition] userTokenABalance: ', token0Amount);
+    // console.log('[buildLpPosition] userTokenBBalance: ', token1Amount);
 
     const result = {
       pair: pair,
@@ -71,8 +73,8 @@ export async function buildLpPosition(
       balance: balance,
       token0Token: token0,
       token1Token: token1,
-      token0Amount: token0Amount,
-      token1Amount: token1Amount
+      token0Amount: token0Amount?.toExact(),
+      token1Amount: token1Amount?.toExact()
     }
     // console.log('[buildLpPosition] position built with', result);
 
@@ -92,4 +94,13 @@ export async function buildLpPosition(
     console.log('[buildLpPosition][params missing]', pairContract);
     return null
   }
+}
+
+export const formatAmount = (amount?: BigNumber | string, token?: Token) => {
+  if (amount && token) {
+    // return parseFloat(ethers.utils.formatUnits(amount, token.decimals))
+    return ethers.utils.formatUnits(amount, token.decimals)
+  }
+
+  return ''
 }

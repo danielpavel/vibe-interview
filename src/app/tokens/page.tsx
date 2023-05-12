@@ -1,9 +1,9 @@
-import {Token} from '@/types/types'
+import { TokenResponse } from '@/types/types'
 import axios from 'axios'
 
 interface ApiResponse {
   data: {
-    tokens: Token[]
+    tokens: TokenResponse[]
   }
 }
 

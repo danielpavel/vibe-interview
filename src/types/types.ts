@@ -31,6 +31,8 @@ export type LPPos = {
   balance: any,
   token0Token: Token, // this would be Token from @uniswap/sdk-core
   token1Token: Token, // this would be Token from @uniswap/sdk-core
-  token0Amount: CurrencyAmount<Token> // this `any` should be converted to token
-  token1Amount: CurrencyAmount<Token> // this `any` should be converted to token
+  // token0Amount: CurrencyAmount<Token> // this `any` should be converted to token
+  // token0Amount: CurrencyAmount<Token> // this `any` should be converted to token
+  token0Amount: string // this `any` should be converted to token
+  token1Amount: string // this `any` should be converted to token
 }

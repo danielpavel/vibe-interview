@@ -4,7 +4,6 @@ import {SelectedTokenPair, } from '@/types/types'
 import {tokensEqual} from '@/utils/utils'
 import * as tokenList from '@sushiswap/default-token-list'
 import { SupportedChainId, Token } from '@uniswap/sdk-core'
-import { name } from '@sushiswap/sdk'
 
 interface Props {
   tokenName?: any
@@ -115,7 +114,7 @@ const TokenCard: FC<Props> = ({
       className={`p-1 w-[150px] min-w-[150px] h-[240px] rounded-2xl ${
         !isTokenSelected(selectedTokenPair, token)
           ? 'border'
-          : 'border-2 border-green-600 bg-green-400/50 shadow-lg scale-105'
+          : 'border-2 border-green-600 bg-green-400/60 shadow-lg scale-105'
       } hover:scale-105 duration-150 bg-slate-50`}
       onClick={handleTokenOnClick}
     >

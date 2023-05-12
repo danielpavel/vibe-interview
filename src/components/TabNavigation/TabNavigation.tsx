@@ -8,11 +8,11 @@ import {
   MigrateTabContent,
   TokenListTabContent,
 } from '@components/TabNavigation/index'
-import {Token} from '@/types/types'
+import {TokenResponse} from '@/types/types'
 import {RecoilRoot} from 'recoil'
 
 interface Props {
-  tokens: Token[]
+  tokens: TokenResponse[]
 }
 
 const TabNavigation: FC<Props> = ({tokens}) => {

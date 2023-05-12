@@ -2,7 +2,6 @@ import * as SushiRollABI from '@sushiswap/core/artifacts/contracts/SushiRoll.sol
 import { SUSHI_ROLL } from '@/libs/constants';
 import { getProvider } from '@/libs/provider';
 import { Contract, ethers } from 'ethers';
-import { Token } from '@/types/types';
 
 
 export function useSushiRollContract(): Contract | undefined | null {

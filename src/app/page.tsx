@@ -1,12 +1,11 @@
 import axios from 'axios'
-import {Token} from '@/types/types'
+import {TokenResponse} from '@/types/types'
 import React from 'react'
 import TokenListTabContent from '../components/TabNavigation/TokenListTabContent'
-import Wallet from '@components/Wallet'
 
 interface ApiResponse {
   data: {
-    tokens: Token[]
+    tokens: TokenResponse[]
   }
 }
 

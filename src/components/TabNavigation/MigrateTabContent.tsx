@@ -8,10 +8,9 @@ import { useLPPosition } from '@/hooks/useLPPosition';
 import { useTokenPair } from '@/hooks/useTokenPair'
 import { Contract, ethers } from 'ethers';
 import { SUSHI_ROLL } from '@/libs/constants';
-import { buildLpPosition } from '@/utils/utils';
+import { buildLpPosition, formatAmount } from '@/utils/utils';
 import { useUniswapV2PairContract } from '@/hooks/UniswapContracts/usePairContract';
 import { useMetamask } from '@/hooks/useMetamask';
-import { LPositionCell } from '../Cells';
 
 interface Props {}
 
@@ -41,7 +40,7 @@ const MigrateTabContent: FC<Props> = ({}) => {
       const position = await buildLpPosition(
         pairContract,
         wallet,
-        null
+        setLpPosition
       )
 
       if (position) setLpPosition(position)
@@ -59,9 +58,11 @@ const MigrateTabContent: FC<Props> = ({}) => {
     console.log('[handleApproveLPToken]')
 
     try {
-      if (lpPosition?.pairContract) {
-        const amount = ethers.utils.parseUnits('1000000000', 18)
-        const transaction = await lpPosition.pairContract.approve(
+      if (lpPosition?.pairContract?.contract) {
+        const contract = lpPosition?.pairContract?.contract;
+
+        const amount = ethers.utils.parseUnits(lPAmount, 18)
+        const transaction = await contract.approve(
           SUSHI_ROLL,
           amount
         )
@@ -87,8 +88,8 @@ const MigrateTabContent: FC<Props> = ({}) => {
   }
 
   return (
-    <div className="flex py-20 px-5 w-full bg-green-100 justify-center">
-      <div className="w-3/4 px-14 py-5">
+    <div className="flex py-20 px-5 w-full justify-center">
+      <div className="w-3/4 px-14 py-5 border-slate-300 border rounded-2xl">
         <div className="font-mono text-lg">Your token pair selection:</div>
         <div className="font-mono text-sm mt-2 mb-4">
           {selectedTokenPair?.token0?.symbol}/
@@ -102,13 +103,10 @@ const MigrateTabContent: FC<Props> = ({}) => {
         </button>
 
         <div className='flex mb-2 font-mono items-center gap-x-4'>
-          Available LP Tokens: {lpPosition?.pair?.liquidityToken?.symbol}- {lpPosition?.balance}
+          Available LP Tokens: {formatAmount(lpPosition?.balance, lpPosition?.pair?.liquidityToken)} ${lpPosition?.pair?.liquidityToken?.symbol}
         </div>
-        <LPositionCell position={lpPosition} />
-
 
         <div className='flex mb-12 font-mono items-center gap-x-4'>
-          LP Token: {lpPosition?.pair?.liquidityToken?.symbol}
           <Input
             type="number"
             value={lPAmount}

@@ -20,7 +20,7 @@ export const useLPPosition = (): [
       sessionStorage.removeItem('lpPos')
     }
     // console.log('[inside setting position][setting]', lpPos)
-    setLpPos(lpPos)
+    setLpPos(pos)
   }, [])
 
   useEffect(() => {
